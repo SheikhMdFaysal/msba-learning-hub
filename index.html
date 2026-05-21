@@ -296,9 +296,17 @@ document.addEventListener('click', e => {
 });
 
 /* ROUTER */
+let _lastNav = { route: null, courseId: null };
 function render() {
   renderNav();
-  window.scrollTo({top:0, behavior:'smooth'});
+  // Only scroll to top on real navigation (route or course change),
+  // not on in-page interactions like accordion toggles, quiz answers, flips, filters.
+  const navKey = state.route + '|' + (state.courseId || '');
+  const prevKey = _lastNav.route + '|' + (_lastNav.courseId || '');
+  if (navKey !== prevKey) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    _lastNav = { route: state.route, courseId: state.courseId };
+  }
   if (state.route === 'dashboard')  return renderDashboard();
   if (state.route === 'library')    return state.courseId ? renderCourse() : renderLibrary();
   if (state.route === 'interview')  return renderInterview();
