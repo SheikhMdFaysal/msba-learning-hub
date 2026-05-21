@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MSBA Learning Hub · Faysal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {
+      fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'], display: ['Space Grotesk','Inter','sans-serif'] },
+      animation: {
+        'fade-up': 'fadeUp .5s ease both',
+        'fade-in': 'fadeIn .4s ease both',
+        'scale-in': 'scaleIn .35s cubic-bezier(.18,.89,.32,1.28) both',
+        'slide-down': 'slideDown .3s ease both',
+        'shimmer': 'shimmer 2.4s linear infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-ring': 'pulseRing 2.4s ease-out infinite',
+        'spin-slow': 'spin 22s linear infinite'
+      },
+      keyframes: {
+        fadeUp:   { '0%':{opacity:'0', transform:'translateY(14px)'}, '100%':{opacity:'1', transform:'none'} },
+        fadeIn:   { '0%':{opacity:'0'}, '100%':{opacity:'1'} },
+        scaleIn:  { '0%':{opacity:'0', transform:'scale(.92)'}, '100%':{opacity:'1', transform:'scale(1)'} },
+        slideDown:{ '0%':{opacity:'0', maxHeight:'0', transform:'translateY(-6px)'}, '100%':{opacity:'1', maxHeight:'1200px', transform:'none'} },
+        shimmer:  { '0%':{backgroundPosition:'-700px 0'}, '100%':{backgroundPosition:'700px 0'} },
+        float:    { '0%,100%':{transform:'translateY(0)'}, '50%':{transform:'translateY(-10px)'} },
+        pulseRing:{ '0%':{transform:'scale(.8)', opacity:'.8'}, '100%':{transform:'scale(2.2)', opacity:'0'} }
+      }
+    }}
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light dark; }
+  html, body { font-family:'Inter',ui-sans-serif,system-ui,sans-serif; }
+  .display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+  .mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+  .glass { backdrop-filter: blur(14px) saturate(180%); background: rgba(255,255,255,0.7); }
+  .dark .glass { background: rgba(15,23,42,0.6); }
+  .card-glow { box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 30px 60px -20px rgba(0,0,0,0.3); }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Flip card (smoother) */
+  .flip-card { perspective: 1500px; }
+  .flip-inner { transition: transform .8s cubic-bezier(.4,.0,.2,1); transform-style: preserve-3d; position: relative; }
+  .flip-inner.flipped { transform: rotateY(180deg); }
+  .flip-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; position: absolute; inset: 0; }
+  .flip-back { transform: rotateY(180deg); }
+
+  /* Smooth details/accordion */
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] > .acc-body { animation: slideOpen .35s ease both; }
+  @keyframes slideOpen { from { opacity:0; transform: translateY(-6px); max-height:0; } to { opacity:1; transform:none; max-height:1500px; } }
+  details > summary .chev { transition: transform .3s; }
+  details[open] > summary .chev { transform: rotate(90deg); }
+
+  /* Card hover lift */
+  .lift { transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s, border-color .3s; }
+  .lift:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -16px rgba(99,102,241,.45); }
+
+  /* Ripple */
+  .ripple { position: relative; overflow: hidden; }
+  .ripple::after {
+    content:''; position:absolute; inset:0; background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,.45) 0%, transparent 35%);
+    opacity:0; transition: opacity .6s, transform .6s; pointer-events:none;
+  }
+  .ripple.rippling::after { opacity:1; transform: scale(2); }
+
+  /* Animated gradient text */
+  .grad-text {
+    background: linear-gradient(90deg,#6366f1,#ec4899,#f59e0b,#10b981,#6366f1);
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: gradMove 8s linear infinite;
+  }
+  @keyframes gradMove { 0%{background-position:0 0} 100%{background-position:300% 0} }
+
+  /* Shimmer skeleton */
+  .shimmer { background: linear-gradient(90deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.04) 100%); background-size: 700px 100%; }
+
+  /* Tag */
+  .tag { display:inline-flex; align-items:center; padding:.18rem .6rem; border-radius:9999px; font-size:.7rem; font-weight:500; }
+  .row-hover:hover { background: rgba(99,102,241,0.07); }
+  .kbd { font-family:'JetBrains Mono',monospace; font-size:.7rem; padding:.1rem .35rem; border:1px solid rgba(148,163,184,.4); border-bottom-width:2px; border-radius:.3rem; }
+
+  /* Mind map */
+  .mm-node circle { transition: all .3s; cursor: pointer; }
+  .mm-node:hover circle { stroke-width: 3; filter: drop-shadow(0 0 8px currentColor); }
+  .mm-link { fill: none; stroke: rgba(148,163,184,.35); stroke-width: 1.4; stroke-dasharray: 600; stroke-dashoffset: 600; animation: drawLink 1.4s ease forwards; }
+  @keyframes drawLink { to { stroke-dashoffset: 0; } }
+  .mm-label { font-size: 12px; font-weight: 500; pointer-events: none; }
+
+  /* Avatar pulse ring */
+  .avatar-ring { position: relative; }
+  .avatar-ring::before, .avatar-ring::after {
+    content:''; position:absolute; inset:0; border-radius:9999px; border:2px solid #6366f1; animation: pulseRing 2.4s ease-out infinite;
+  }
+  .avatar-ring::after { animation-delay: 1.2s; }
+  @keyframes pulseRing { 0%{transform:scale(.95); opacity:.7} 100%{transform:scale(1.6); opacity:0} }
+
+  /* Confetti */
+  .confetti { position: fixed; inset:0; pointer-events: none; overflow:hidden; z-index: 50; }
+  .confetti span { position:absolute; width:8px; height:14px; top:-10vh; opacity:0; animation: fall 2.6s linear forwards; }
+  @keyframes fall { 0%{opacity:1; transform: translateY(0) rotate(0)} 100%{opacity:0; transform: translateY(110vh) rotate(720deg)} }
+
+  /* Stagger helper */
+  .stagger > * { animation: fadeUp .5s ease both; }
+  .stagger > *:nth-child(1){animation-delay:.05s}
+  .stagger > *:nth-child(2){animation-delay:.12s}
+  .stagger > *:nth-child(3){animation-delay:.19s}
+  .stagger > *:nth-child(4){animation-delay:.26s}
+  .stagger > *:nth-child(5){animation-delay:.33s}
+  .stagger > *:nth-child(6){animation-delay:.40s}
+  .stagger > *:nth-child(7){animation-delay:.47s}
+  .stagger > *:nth-child(8){animation-delay:.54s}
+  .stagger > *:nth-child(9){animation-delay:.61s}
+  .stagger > *:nth-child(10){animation-delay:.68s}
+  .stagger > *:nth-child(11){animation-delay:.75s}
+  .stagger > *:nth-child(12){animation-delay:.82s}
+
+  @keyframes fadeUp { from {opacity:0; transform: translateY(14px)} to {opacity:1; transform:none} }
+
+  /* Animated nav highlight */
+  .nav-btn { position: relative; transition: color .25s; }
+  .nav-btn.active { color: white; }
+
+  /* Quiz option button */
+  .opt { transition: all .2s; }
+  .opt:hover:not(.locked) { border-color: #6366f1; transform: translateY(-1px); }
+  .opt.correct { background: linear-gradient(90deg,#10b981,#34d399); color: white; border-color:#10b981; animation: scaleIn .3s ease; }
+  .opt.wrong { background: linear-gradient(90deg,#ef4444,#f87171); color: white; border-color: #ef4444; animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} }
+
+  /* Smooth route transition */
+  #app > * { animation: fadeUp .45s ease both; }
+
+  /* Hero floating shapes */
+  .blob { position: absolute; border-radius: 50%; filter: blur(40px); opacity:.35; pointer-events:none; }
+
+  /* Scroll bar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: rgba(99,102,241,.35); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,.5); }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen overflow-x-hidden">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 glass border-b border-slate-200/60 dark:border-slate-800/60">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+    <button class="flex items-center gap-3 group" id="logoBtn">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-fuchsia-500 to-amber-400 flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition">M</div>
+      <div class="text-left hidden sm:block">
+        <div class="text-sm font-semibold leading-tight display">MSBA Learning Hub</div>
+        <div class="text-[11px] text-slate-500 leading-tight" id="userTag"></div>
+      </div>
+    </button>
+    <nav class="hidden lg:flex ml-4 gap-1 text-sm" id="navTabs"></nav>
+    <div class="flex-1"></div>
+    <div class="relative w-44 sm:w-72">
+      <input id="globalSearch" placeholder="Search topics, terms, Qs…" class="w-full pl-9 pr-3 py-2 rounded-lg bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition" />
+      <svg class="absolute left-2.5 top-2.5 w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+      <span class="hidden sm:inline absolute right-2 top-2 kbd">/</span>
+    </div>
+    <button id="themeToggle" class="p-2 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition" title="Toggle theme">
+      <svg id="iconSun" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg id="iconMoon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+    </button>
+  </div>
+  <!-- mobile nav -->
+  <nav class="lg:hidden px-4 pb-2 flex gap-1 overflow-x-auto scrollbar-hide text-xs" id="navTabsMobile"></nav>
+</header>
+
+<!-- BIG TITLE BANNER -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0">
+    <div class="blob bg-indigo-500 w-72 h-72 -top-10 -left-10 animate-float"></div>
+    <div class="blob bg-fuchsia-500 w-80 h-80 top-10 right-0 animate-float" style="animation-delay:-2s"></div>
+    <div class="blob bg-amber-400 w-60 h-60 bottom-0 left-1/3 animate-float" style="animation-delay:-4s"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 pt-8 sm:pt-14 pb-6 text-center">
+    <div class="inline-flex items-center gap-2 text-xs tracking-widest uppercase text-slate-500 mb-3 animate-fade-in">
+      <span class="w-8 h-px bg-slate-400"></span>
+      Your personal MSBA cockpit
+      <span class="w-8 h-px bg-slate-400"></span>
+    </div>
+    <h1 class="display text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] animate-fade-up">
+      All your <span class="grad-text">MSBA knowledge</span><br/>
+      in one place — <span class="italic">revise &amp; go interview-ready.</span>
+    </h1>
+    <p class="mt-4 max-w-2xl mx-auto text-slate-600 dark:text-slate-300 text-sm sm:text-base animate-fade-up" style="animation-delay:.12s">
+      12 courses, distilled. Key takeaways, formulas, interview Q&amp;A, quizzes, a mind map and a glossary — all wired together so you can master the fundamentals fast.
+    </p>
+    <div class="mt-6 flex flex-wrap justify-center gap-2 animate-fade-up" style="animation-delay:.2s">
+      <button class="hop bg-indigo-500 hover:bg-indigo-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm ripple shadow-lg" data-go="library">📚 Browse Courses</button>
+      <button class="hop bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium px-5 py-2.5 rounded-xl text-sm ripple" data-go="interview">🎤 Interview Drill</button>
+      <button class="hop bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 font-medium px-5 py-2.5 rounded-xl text-sm ripple" data-go="quiz">🧪 Take a Quiz</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 pb-8" id="app"></main>
+
+<!-- FOOTER -->
+<footer class="border-t border-slate-200/60 dark:border-slate-800/60 mt-10">
+  <div class="max-w-7xl mx-auto px-6 py-6 text-xs text-slate-500 flex flex-wrap justify-between gap-2">
+    <div>Built by Faysal · MSBA Job-Prep Hub · Local &amp; offline</div>
+    <div>Press <span class="kbd">/</span> search · <span class="kbd">D</span> dashboard · <span class="kbd">Q</span> quiz · <span class="kbd">I</span> interview · <span class="kbd">M</span> mind map · <span class="kbd">A</span> about</div>
+  </div>
+</footer>
+
+<!-- Confetti host -->
+<div id="confettiHost"></div>
+
+<script src="data.js"></script>
+<script>
+/* ============================================================
+   MSBA Learning Hub — app logic
+   ============================================================ */
+const D = window.MSBA_DATA;
+const $ = (s,r=document) => r.querySelector(s);
+const $$ = (s,r=document) => Array.from(r.querySelectorAll(s));
+const app = $('#app');
+
+const ROUTES = [
+  { id:'dashboard', label:'Dashboard', icon:'🏠' },
+  { id:'library',   label:'Courses', icon:'📚' },
+  { id:'interview', label:'Interview', icon:'🎤' },
+  { id:'quiz',      label:'Quiz', icon:'🧪' },
+  { id:'mindmap',   label:'Mind Map', icon:'🌐' },
+  { id:'glossary',  label:'Glossary', icon:'📖' },
+  { id:'about',     label:'About', icon:'👤' }
+];
+
+let state = {
+  route: 'dashboard',
+  courseId: null,
+  courseTab: 'overview',
+  interviewIdx: 0,
+  interviewFilter: 'all',
+  interviewLevel: 'all',
+  flipped: false,
+  search: '',
+  theme: localStorage.getItem('msba-theme') || 'dark',
+
+  // quiz state
+  quizFilter: 'all',
+  quizPool: [],
+  quizIdx: 0,
+  quizAnswers: [], // {index, correctIdx, picked}
+  quizPhase: 'setup', // setup | running | result
+};
+
+/* THEME */
+function applyTheme() {
+  const dark = state.theme === 'dark';
+  document.documentElement.classList.toggle('dark', dark);
+  $('#iconSun').classList.toggle('hidden', !dark);
+  $('#iconMoon').classList.toggle('hidden', dark);
+}
+$('#themeToggle').addEventListener('click', () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('msba-theme', state.theme);
+  applyTheme();
+});
+$('#logoBtn').addEventListener('click', () => { state.route='dashboard'; state.courseId=null; render(); });
+
+/* NAV */
+function renderNav() {
+  const html = ROUTES.map(r => `
+    <button data-route="${r.id}" class="nav-btn px-3 py-1.5 rounded-lg whitespace-nowrap transition ${state.route===r.id ? 'bg-indigo-500 text-white shadow active':'hover:bg-slate-200/60 dark:hover:bg-slate-800/60'}">
+      <span class="mr-1">${r.icon}</span>${r.label}
+    </button>`).join('');
+  $('#navTabs').innerHTML = html;
+  $('#navTabsMobile').innerHTML = html;
+  $$('.nav-btn').forEach(b => b.addEventListener('click', () => { state.route = b.dataset.route; state.courseId = null; render(); }));
+}
+$('#userTag').textContent = D.user.program;
+
+/* RIPPLE delegate */
+document.addEventListener('click', e => {
+  const t = e.target.closest('.ripple');
+  if (!t) return;
+  const r = t.getBoundingClientRect();
+  t.style.setProperty('--x', `${e.clientX - r.left}px`);
+  t.style.setProperty('--y', `${e.clientY - r.top}px`);
+  t.classList.remove('rippling'); void t.offsetWidth; t.classList.add('rippling');
+  setTimeout(()=>t.classList.remove('rippling'), 600);
+});
+
+/* ROUTER */
+function render() {
+  renderNav();
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (state.route === 'dashboard')  return renderDashboard();
+  if (state.route === 'library')    return state.courseId ? renderCourse() : renderLibrary();
+  if (state.route === 'interview')  return renderInterview();
+  if (state.route === 'quiz')       return renderQuiz();
+  if (state.route === 'mindmap')    return renderMindMap();
+  if (state.route === 'glossary')   return renderGlossary();
+  if (state.route === 'about')      return renderAbout();
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard() {
+  const totalConcepts = D.courses.reduce((a,c)=>a+(c.concepts?.length||0),0);
+  const totalQs = D.courses.reduce((a,c)=>a+(c.interview?.length||0),0);
+  const totalTakeaways = D.courses.reduce((a,c)=>a+(c.keyTakeaways?.length||0),0);
+  const totalQuiz = D.quizzes.length;
+
+  app.innerHTML = `
+    <!-- Greeting -->
+    <div class="flex items-center justify-between mb-6 animate-fade-up">
+      <div class="text-sm text-slate-500">Hi 👋 — welcome back to your study cockpit.</div>
+      <div class="text-xs text-slate-400 hidden sm:block">${new Date().toLocaleDateString(undefined,{weekday:'long', month:'short', day:'numeric'})}</div>
+    </div>
+
+    <!-- What is here / how to use -->
+    <section class="mb-10">
+      <div class="text-center mb-5">
+        <h2 class="display text-2xl sm:text-3xl font-bold">What's inside this platform</h2>
+        <p class="text-sm text-slate-500 mt-1">Six ways to study. Pick whichever matches your mood.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
+        ${D.howToUse.map(h => `
+          <button data-go="${h.route}" class="hop text-left rounded-2xl p-5 bg-white/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 lift ripple group">
+            <div class="text-3xl">${h.icon}</div>
+            <div class="font-semibold mt-2 display">${h.title}</div>
+            <div class="text-sm text-slate-500 mt-1">${h.body}</div>
+            <div class="mt-3 text-xs font-medium text-indigo-500 inline-flex items-center gap-1">Open <span class="transition group-hover:translate-x-1">→</span></div>
+          </button>`).join('')}
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="mb-10">
+      <div class="text-center mb-2">
+        <h2 class="display text-2xl sm:text-3xl font-bold">The path from zero to <span class="grad-text">Data / Business Analyst</span></h2>
+        <p class="text-sm text-slate-500 mt-1">Nine steps. Each step maps to courses in this hub — click a step to jump in.</p>
+      </div>
+      ${renderRoadmap()}
+    </section>
+
+    <!-- Stats strip -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2 stagger">
+      ${statCard('Courses', D.courses.length, '🎓')}
+      ${statCard('Key Takeaways', totalTakeaways, '💡')}
+      ${statCard('Interview Qs', totalQs, '🎤')}
+      ${statCard('Quiz Questions', totalQuiz, '🧪')}
+    </section>
+
+    <section class="mt-8 rounded-3xl p-6 bg-white/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 card-glow animate-fade-up">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="display text-lg font-semibold">Ready to drill?</div>
+          <div class="text-sm text-slate-500">Jump straight into interview-mode flashcards or a quick quiz.</div>
+        </div>
+        <div class="flex gap-2">
+          <button class="hop px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm hover:border-indigo-400 ripple" data-go="interview">🎤 Interview</button>
+          <button class="hop px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm hover:bg-indigo-600 ripple" data-go="quiz">🧪 Start Quiz</button>
+        </div>
+      </div>
+    </section>
+  `;
+  wireHopButtons();
+  $$('[data-roadmap-course]').forEach(b => b.addEventListener('click', () => {
+    state.route='library'; state.courseId = b.dataset.roadmapCourse; state.courseTab='overview'; render();
+  }));
+  $$('[data-roadmap-step]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    document.querySelectorAll('.rm-step').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    const drawer = document.getElementById('rm-drawer-' + b.dataset.roadmapStep);
+    document.querySelectorAll('.rm-drawer').forEach(d => d.classList.add('hidden'));
+    if (drawer) drawer.classList.remove('hidden');
+  }));
+}
+
+function renderRoadmap() {
+  const r = D.roadmap;
+  return `
+    <div class="relative">
+      <div class="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
+        <div class="flex items-stretch gap-0 min-w-max py-6 px-2 relative">
+          <!-- connector line -->
+          <div class="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-sky-500 via-indigo-500 via-fuchsia-500 to-emerald-400 rounded-full opacity-40"></div>
+          ${r.map((s,i) => `
+            <button data-roadmap-step="${i}" class="rm-step group relative flex flex-col items-center mx-2 first:ml-0 last:mr-0 w-36 cursor-pointer animate-fade-up" style="animation-delay:${i*70}ms">
+              <div class="relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-br ${s.color} text-white text-2xl grid place-items-center shadow-xl group-hover:scale-110 transition" style="box-shadow: 0 12px 30px -10px rgba(99,102,241,.4)">
+                ${s.icon}
+                <div class="absolute -top-1.5 -right-1.5 bg-white text-slate-900 text-[10px] font-bold rounded-full w-6 h-6 grid place-items-center shadow">${s.step}</div>
+              </div>
+              <div class="mt-3 text-xs font-semibold display text-center">${s.title}</div>
+              <div class="text-[10px] text-slate-500 text-center mt-1 leading-tight">${s.desc}</div>
+              <!-- arrow -->
+              ${i < r.length-1 ? `<div class="hidden md:block absolute top-8 -right-3 z-0 text-slate-400">›</div>` : ''}
+            </button>`).join('')}
+        </div>
+      </div>
+      <!-- Drawers -->
+      <div class="mt-4 space-y-2">
+        ${r.map((s,i) => `
+          <div id="rm-drawer-${i}" class="rm-drawer hidden rounded-2xl p-5 border-2 border-indigo-500/30 bg-indigo-50/40 dark:bg-indigo-500/5 animate-fade-up">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} text-white text-xl grid place-items-center shadow shrink-0">${s.icon}</div>
+              <div class="flex-1">
+                <div class="text-xs uppercase tracking-widest text-slate-500">Step ${s.step}</div>
+                <div class="display font-bold text-lg">${s.title}</div>
+                <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">${s.desc}</p>
+                ${s.courses.length ? `
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="text-xs text-slate-500 self-center">Courses in this step:</span>
+                    ${s.courses.map(cid => {
+                      const c = D.courses.find(x => x.id === cid); if (!c) return '';
+                      return `<button data-roadmap-course="${cid}" class="px-3 py-1.5 rounded-full text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition inline-flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded bg-gradient-to-br ${c.color} text-white grid place-items-center text-[10px]">${c.icon}</span>${c.name} →
+                      </button>`;
+                    }).join('')}
+                  </div>` : `<div class="mt-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium">🎉 You're hired! Keep iterating on portfolio and stay current.</div>`}
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="text-center text-xs text-slate-400 mt-2">Click a step above to expand details</div>
+    </div>
+  `;
+}
+function wireHopButtons(){ $$('.hop').forEach(b => b.addEventListener('click', () => { state.route = b.dataset.go; state.courseId=null; render(); })); }
+function statCard(label, value, icon) {
+  return `
+    <div class="rounded-2xl p-4 bg-white/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 card-glow hover:scale-[1.02] transition">
+      <div class="text-2xl">${icon}</div>
+      <div class="mt-2 text-2xl font-bold display">${value}</div>
+      <div class="text-xs text-slate-500">${label}</div>
+    </div>`;
+}
+function pathStep(n,title,detail,color) {
+  const map = {sky:'from-sky-500 to-cyan-400', emerald:'from-emerald-500 to-teal-500', rose:'from-rose-500 to-orange-400'};
+  return `
+    <div class="rounded-2xl p-5 bg-white/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 relative overflow-hidden lift">
+      <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-tr ${map[color]} opacity-20"></div>
+      <div class="text-xs text-slate-500">Step ${n}</div>
+      <div class="font-semibold mt-1 display">${title}</div>
+      <div class="text-sm text-slate-500 mt-1">${detail}</div>
+    </div>`;
+}
+function courseCard(c) {
+  return `
+    <button data-course="${c.id}" class="text-left rounded-2xl p-5 bg-white/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 lift relative overflow-hidden group ripple">
+      <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${c.color}"></div>
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr ${c.color} flex items-center justify-center text-xl text-white shadow group-hover:rotate-6 transition">${c.icon}</div>
+        <div>
+          <div class="text-[11px] uppercase tracking-wider text-slate-500">${c.code}</div>
+          <div class="font-semibold leading-tight display">${c.name}</div>
+        </div>
+      </div>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400 line-clamp-3">${c.summary}</p>
+      <div class="mt-3 flex flex-wrap gap-2 text-[11px] text-slate-500">
+        <span class="tag bg-slate-100 dark:bg-slate-800">${c.keyTakeaways?.length||0} takeaways</span>
+        <span class="tag bg-slate-100 dark:bg-slate-800">${c.concepts?.length||0} concepts</span>
+        <span class="tag bg-slate-100 dark:bg-slate-800">${c.interview?.length||0} Qs</span>
+      </div>
+    </button>`;
+}
+
+/* ============================================================
+   LIBRARY
+   ============================================================ */
+function renderLibrary() {
+  const q = state.search.toLowerCase();
+  const list = D.courses.filter(c => !q || c.name.toLowerCase().includes(q) || c.summary.toLowerCase().includes(q));
+  app.innerHTML = `
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="display text-2xl font-bold">📚 Course Library</h1>
+        <p class="text-sm text-slate-500">Click any course name to expand a preview, or jump straight into the full module.</p>
+      </div>
+      <div class="text-sm text-slate-500">${list.length} of ${D.courses.length} courses</div>
+    </div>
+    <div class="space-y-3 stagger">
+      ${list.map(courseAccordion).join('')}
+    </div>
+  `;
+  // Wire the inline "open full" buttons
+  $$('[data-open-course]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    state.courseId = b.dataset.openCourse; state.courseTab='overview'; render();
+  }));
+  // Add a nice ripple to the summary on click
+}
+function courseAccordion(c) {
+  const takeawayPreview = (c.keyTakeaways||[]).slice(0,3);
+  return `
+    <details class="group rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden lift transition">
+      <summary class="p-4 sm:p-5 flex items-center gap-4 row-hover ripple transition">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-tr ${c.color} grid place-items-center text-2xl text-white shadow shrink-0 group-open:rotate-6 transition">${c.icon}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-[11px] uppercase tracking-wider text-slate-500">${c.code}</div>
+          <div class="display font-semibold text-base sm:text-lg leading-tight group-hover:text-indigo-500 transition">${c.name}</div>
+          <div class="text-xs text-slate-500 mt-0.5 truncate">${c.summary}</div>
+        </div>
+        <div class="hidden sm:flex gap-1 text-[10px] text-slate-500 shrink-0">
+          <span class="tag bg-slate-100 dark:bg-slate-800">${c.keyTakeaways?.length||0} 💡</span>
+          <span class="tag bg-slate-100 dark:bg-slate-800">${c.concepts?.length||0} 🧩</span>
+          <span class="tag bg-slate-100 dark:bg-slate-800">${c.interview?.length||0} 🎤</span>
+        </div>
+        <span class="chev text-slate-400 text-xl shrink-0">›</span>
+      </summary>
+      <div class="acc-body px-5 pb-5 pt-2 border-t border-slate-200/60 dark:border-slate-800">
+        <div class="grid md:grid-cols-3 gap-4 mt-3">
+          <div class="md:col-span-2">
+            <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Top takeaways</div>
+            <ol class="space-y-2 text-sm">
+              ${takeawayPreview.map((t,i) => `<li class="flex gap-2"><span class="text-indigo-500 font-semibold w-5">${i+1}.</span><span>${t}</span></li>`).join('')}
+            </ol>
+            ${(c.keyTakeaways?.length||0) > 3 ? `<div class="text-[11px] text-slate-400 mt-2">+ ${c.keyTakeaways.length - 3} more inside</div>` : ''}
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Inside this course</div>
+            <div class="grid grid-cols-3 gap-1.5 text-center">
+              <div class="rounded-lg p-2 bg-slate-100 dark:bg-slate-800"><div class="text-base font-bold display">${c.keyTakeaways?.length||0}</div><div class="text-[10px] text-slate-500">Takeaways</div></div>
+              <div class="rounded-lg p-2 bg-slate-100 dark:bg-slate-800"><div class="text-base font-bold display">${c.concepts?.length||0}</div><div class="text-[10px] text-slate-500">Concepts</div></div>
+              <div class="rounded-lg p-2 bg-slate-100 dark:bg-slate-800"><div class="text-base font-bold display">${c.interview?.length||0}</div><div class="text-[10px] text-slate-500">Qs</div></div>
+            </div>
+            <button data-open-course="${c.id}" class="mt-3 w-full py-2 rounded-xl bg-indigo-500 text-white text-sm hover:bg-indigo-600 ripple transition font-medium">
+              Open full course →
+            </button>
+          </div>
+        </div>
+      </div>
+    </details>`;
+}
+
+/* ============================================================
+   COURSE DETAIL
+   ============================================================ */
+function renderCourse() {
+  const c = D.courses.find(x => x.id === state.courseId);
+  if (!c) { state.courseId=null; return renderLibrary(); }
+  const tabs = [
+    {id:'overview', label:'Quick Read', icon:'⚡'},
+    {id:'concepts', label:'Concepts', icon:'🧩'},
+    {id:'formulas', label:'Formulas', icon:'📐'},
+    {id:'interview', label:'Interview Qs', icon:'🎤'},
+    {id:'quiz', label:'Quiz', icon:'🧪'},
+    {id:'resources', label:'My Files', icon:'📁'}
+  ];
+
+  app.innerHTML = `
+    <button id="backBtn" class="text-sm text-slate-500 hover:text-indigo-500 mb-3 transition">← Back to Library</button>
+    <section class="rounded-3xl p-6 sm:p-8 mb-5 card-glow relative overflow-hidden bg-gradient-to-br ${c.color} text-white animate-scale-in">
+      <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,.35), transparent 40%), radial-gradient(circle at 80% 80%, rgba(255,255,255,.3), transparent 45%);"></div>
+      <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-white/10 animate-float"></div>
+      <div class="relative">
+        <div class="text-xs uppercase tracking-[0.25em] opacity-80">${c.code}</div>
+        <h1 class="display text-2xl sm:text-4xl font-bold mt-1">${c.icon} ${c.name}</h1>
+        <p class="mt-3 max-w-3xl opacity-95">${c.summary}</p>
+      </div>
+    </section>
+
+    <div class="flex gap-1 mb-4 overflow-x-auto scrollbar-hide">
+      ${tabs.map(t => `
+        <button data-tab="${t.id}" class="tab-btn px-4 py-2 rounded-xl text-sm whitespace-nowrap ripple transition ${state.courseTab===t.id?'bg-indigo-500 text-white shadow':'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400'}">
+          <span class="mr-1">${t.icon}</span>${t.label}
+        </button>`).join('')}
+    </div>
+
+    <div id="tabContent"></div>
+  `;
+  $('#backBtn').addEventListener('click', () => { state.courseId = null; render(); });
+  $$('.tab-btn').forEach(b => b.addEventListener('click', () => { state.courseTab = b.dataset.tab; render(); }));
+  renderCourseTab(c);
+}
+function renderCourseTab(c) {
+  const el = $('#tabContent');
+  if (state.courseTab === 'overview') {
+    el.innerHTML = `
+      <section class="grid md:grid-cols-2 gap-4 stagger">
+        <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+          <h3 class="font-semibold mb-3 flex items-center gap-2 display"><span>💡</span>Key Takeaways</h3>
+          <ol class="space-y-2 text-sm">
+            ${c.keyTakeaways.map((t,i)=>`<li class="flex gap-2 animate-fade-up" style="animation-delay:${i*60}ms"><span class="text-indigo-500 font-semibold w-5">${i+1}.</span><span>${t}</span></li>`).join('')}
+          </ol>
+        </div>
+        <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+          <h3 class="font-semibold mb-3 flex items-center gap-2 display"><span>🎯</span>5-Minute Recap</h3>
+          <p class="text-sm leading-relaxed">${c.summary}</p>
+          <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+            <div class="rounded-xl p-3 bg-slate-100 dark:bg-slate-800"><div class="text-xl font-bold display">${c.keyTakeaways?.length||0}</div><div class="text-[11px] text-slate-500">Takeaways</div></div>
+            <div class="rounded-xl p-3 bg-slate-100 dark:bg-slate-800"><div class="text-xl font-bold display">${c.concepts?.length||0}</div><div class="text-[11px] text-slate-500">Concepts</div></div>
+            <div class="rounded-xl p-3 bg-slate-100 dark:bg-slate-800"><div class="text-xl font-bold display">${c.interview?.length||0}</div><div class="text-[11px] text-slate-500">Interview Qs</div></div>
+          </div>
+          <button class="mt-4 w-full py-2 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium ripple transition" id="goInterview">Drill the interview Qs →</button>
+        </div>
+      </section>
+    `;
+    $('#goInterview').addEventListener('click', () => { state.courseTab='interview'; render(); });
+    return;
+  }
+  if (state.courseTab === 'concepts') {
+    el.innerHTML = `
+      <section class="grid md:grid-cols-2 gap-3 stagger">
+        ${c.concepts.map(cn => `
+          <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift transition">
+            <div class="font-semibold mb-1 display">${cn.title}</div>
+            <div class="text-sm text-slate-600 dark:text-slate-400">${cn.body}</div>
+          </div>`).join('')}
+      </section>`;
+    return;
+  }
+  if (state.courseTab === 'formulas') {
+    el.innerHTML = (c.formulas?.length||0) === 0
+      ? `<div class="text-sm text-slate-500">No formulas in this course.</div>`
+      : `<section class="space-y-3 stagger">
+          ${c.formulas.map(f => `
+            <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <div class="font-semibold display">${f.name}</div>
+                <div class="text-[11px] text-slate-500">Use when: ${f.when}</div>
+              </div>
+              <div class="mt-2 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 mono text-sm overflow-auto">${f.expr}</div>
+            </div>`).join('')}
+        </section>`;
+    return;
+  }
+  if (state.courseTab === 'interview') {
+    el.innerHTML = `
+      <section class="space-y-2 stagger">
+        ${c.interview.map((q,i)=>`
+          <details class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden lift">
+            <summary class="p-4 flex items-center gap-3 row-hover transition">
+              <div class="w-7 h-7 rounded-lg bg-indigo-500 text-white text-xs font-bold grid place-items-center">Q${i+1}</div>
+              <div class="flex-1 font-medium text-sm">${q.q}</div>
+              <span class="tag ${levelClass(q.level)}">${q.level}</span>
+              <span class="chev text-slate-400">›</span>
+            </summary>
+            <div class="acc-body px-4 pb-4 pt-1 text-sm text-slate-600 dark:text-slate-300 border-t border-slate-200/60 dark:border-slate-800">
+              ${q.a}
+            </div>
+          </details>`).join('')}
+      </section>`;
+    return;
+  }
+  if (state.courseTab === 'quiz') {
+    el.innerHTML = `
+      <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+        <h3 class="font-semibold mb-2 flex items-center gap-2 display"><span>🧪</span>Test yourself on this course</h3>
+        <p class="text-sm text-slate-500 mb-3">Jump into the quiz module pre-filtered to this course.</p>
+        <button class="px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm hover:bg-indigo-600 ripple" id="startCourseQuiz">Start ${(D.quizzes.filter(q=>q.courseId===c.id)).length}-question quiz →</button>
+      </div>`;
+    $('#startCourseQuiz').addEventListener('click', () => { state.quizFilter = c.id; state.quizPhase='setup'; state.route='quiz'; render(); });
+    return;
+  }
+  if (state.courseTab === 'resources') {
+    const folder = c.folder ? `${D.basePath}/${encodeURI(c.folder)}` : null;
+    el.innerHTML = `
+      <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+        <h3 class="font-semibold mb-2 flex items-center gap-2 display"><span>📁</span>Your original files</h3>
+        <p class="text-sm text-slate-500 mb-3">These open the folder on your machine where your slides, PDFs, and notebooks for this course are stored.</p>
+        ${folder ? `
+          <a href="${folder}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-500 text-white text-sm hover:bg-indigo-600 ripple transition">
+            <span>📂</span> Open "<span class="mono text-xs">${c.folder}</span>"
+          </a>
+          <p class="mt-3 text-xs text-slate-400">If the link does not open, copy this path:</p>
+          <code class="text-xs mono block mt-1 p-2 rounded bg-slate-100 dark:bg-slate-800 break-all">..\\${c.folder}</code>
+        ` : `<div class="text-sm text-slate-500">No folder mapped for this course.</div>`}
+      </div>`;
+    return;
+  }
+}
+function levelClass(l) {
+  if (l==='Basic') return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300';
+  if (l==='Intermediate') return 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300';
+  return 'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300';
+}
+
+/* ============================================================
+   INTERVIEW MODE — flashcards
+   ============================================================ */
+function allQuestions() {
+  const arr = [];
+  D.courses.forEach(c => (c.interview||[]).forEach(q => arr.push({...q, course:c.name, courseId:c.id, color:c.color})));
+  return arr;
+}
+function filteredQuestions() {
+  let arr = allQuestions();
+  if (state.interviewFilter !== 'all') arr = arr.filter(q => q.courseId === state.interviewFilter);
+  if (state.interviewLevel !== 'all') arr = arr.filter(q => q.level === state.interviewLevel);
+  if (state.search) {
+    const s = state.search.toLowerCase();
+    arr = arr.filter(q => q.q.toLowerCase().includes(s) || q.a.toLowerCase().includes(s));
+  }
+  return arr;
+}
+function renderInterview() {
+  const qs = filteredQuestions();
+  if (state.interviewIdx >= qs.length) state.interviewIdx = 0;
+  const q = qs[state.interviewIdx];
+
+  app.innerHTML = `
+    <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+      <div>
+        <h1 class="display text-2xl font-bold">🎤 Interview Prep</h1>
+        <p class="text-sm text-slate-500">Flip the card, judge yourself, move to the next. ${qs.length} questions in this filter.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <select id="filterCourse" class="text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-2 transition focus:border-indigo-400">
+          <option value="all">All courses</option>
+          ${D.courses.map(c => `<option value="${c.id}" ${state.interviewFilter===c.id?'selected':''}>${c.name}</option>`).join('')}
+        </select>
+        <select id="filterLevel" class="text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-2 transition focus:border-indigo-400">
+          ${['all','Basic','Intermediate','Advanced'].map(l => `<option value="${l}" ${state.interviewLevel===l?'selected':''}>${l==='all'?'All levels':l}</option>`).join('')}
+        </select>
+        <button id="shuffle" class="text-sm px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 ripple transition">🔀 Shuffle</button>
+      </div>
+    </div>
+
+    ${qs.length === 0 ? `<div class="rounded-2xl p-10 text-center text-slate-500 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">No questions match this filter.</div>` : `
+    <div class="flip-card mx-auto max-w-2xl animate-scale-in" style="height: 360px;">
+      <div id="flipInner" class="flip-inner ${state.flipped?'flipped':''} cursor-pointer" style="height:100%;">
+        <div class="flip-face rounded-3xl p-8 card-glow bg-gradient-to-br ${q.color} text-white flex flex-col">
+          <div class="flex items-center justify-between text-xs uppercase tracking-widest opacity-80">
+            <span>${q.course}</span><span class="tag bg-white/20">${q.level}</span>
+          </div>
+          <div class="my-auto text-xl sm:text-2xl font-semibold leading-snug display">${q.q}</div>
+          <div class="text-xs opacity-80 inline-flex items-center gap-2">👆 Click / press <span class="kbd">space</span> to reveal answer</div>
+        </div>
+        <div class="flip-face flip-back rounded-3xl p-8 card-glow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
+          <div class="flex items-center justify-between text-xs uppercase tracking-widest text-slate-500">
+            <span>${q.course}</span><span class="tag ${levelClass(q.level)}">${q.level}</span>
+          </div>
+          <div class="my-auto text-sm sm:text-base leading-relaxed">${q.a}</div>
+          <div class="text-xs text-slate-400">Click to flip back ←</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-center gap-3">
+      <button id="prevQ" class="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 ripple transition">← Prev</button>
+      <div class="text-sm text-slate-500 mono">${state.interviewIdx+1} / ${qs.length}</div>
+      <button id="nextQ" class="px-4 py-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 ripple transition">Next →</button>
+    </div>
+
+    <div class="mt-6 max-w-2xl mx-auto h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+      <div class="h-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-400 transition-all duration-500" style="width:${((state.interviewIdx+1)/qs.length)*100}%"></div>
+    </div>
+    `}
+  `;
+  $('#filterCourse')?.addEventListener('change', e => { state.interviewFilter = e.target.value; state.interviewIdx=0; state.flipped=false; render(); });
+  $('#filterLevel')?.addEventListener('change', e => { state.interviewLevel = e.target.value; state.interviewIdx=0; state.flipped=false; render(); });
+  $('#shuffle')?.addEventListener('click', () => { state.interviewIdx = Math.floor(Math.random()*qs.length); state.flipped=false; render(); });
+  // Flip without re-rendering so CSS 3D transition can actually animate
+  $('#flipInner')?.addEventListener('click', () => {
+    const el = document.getElementById('flipInner');
+    state.flipped = !state.flipped;
+    el.classList.toggle('flipped', state.flipped);
+  });
+  $('#prevQ')?.addEventListener('click', () => { state.interviewIdx = (state.interviewIdx-1+qs.length)%qs.length; state.flipped=false; render(); });
+  $('#nextQ')?.addEventListener('click', () => { state.interviewIdx = (state.interviewIdx+1)%qs.length; state.flipped=false; render(); });
+}
+
+/* ============================================================
+   QUIZ MODULE — Test Your Knowledge
+   ============================================================ */
+function buildQuizPool() {
+  let pool = D.quizzes.slice();
+  if (state.quizFilter !== 'all') pool = pool.filter(q => q.courseId === state.quizFilter);
+  // Shuffle
+  for (let i = pool.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  return pool;
+}
+function startQuiz() {
+  state.quizPool = buildQuizPool();
+  state.quizIdx = 0;
+  state.quizAnswers = [];
+  state.quizPhase = 'running';
+  render();
+}
+function renderQuiz() {
+  if (state.quizPhase === 'setup') return renderQuizSetup();
+  if (state.quizPhase === 'running') return renderQuizQuestion();
+  if (state.quizPhase === 'result') return renderQuizResult();
+}
+function renderQuizSetup() {
+  const countAll = D.quizzes.length;
+  const counts = {};
+  D.courses.forEach(c => counts[c.id] = D.quizzes.filter(q => q.courseId === c.id).length);
+  app.innerHTML = `
+    <div class="max-w-3xl mx-auto">
+      <h1 class="display text-3xl font-bold text-center">🧪 Test Your Knowledge</h1>
+      <p class="text-center text-slate-500 mt-2">Pick a focus area, hit start, and answer. Instant feedback after every question.</p>
+
+      <div class="mt-6 rounded-3xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 card-glow animate-scale-in">
+        <div class="text-sm font-medium mb-3">Choose a focus</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 stagger">
+          <button data-filter="all" class="qf text-left p-4 rounded-2xl border ${state.quizFilter==='all'?'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10':'border-slate-200 dark:border-slate-800 hover:border-indigo-300'} transition">
+            <div class="font-semibold display">🎯 Mixed Challenge</div>
+            <div class="text-xs text-slate-500 mt-1">All ${countAll} questions across every course</div>
+          </button>
+          ${D.courses.map(c => `
+            <button data-filter="${c.id}" class="qf text-left p-4 rounded-2xl border ${state.quizFilter===c.id?'border-indigo-500 ring-2 ring-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10':'border-slate-200 dark:border-slate-800 hover:border-indigo-300'} transition">
+              <div class="font-semibold display flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-gradient-to-tr ${c.color} text-white grid place-items-center text-xs">${c.icon}</span>${c.name}</div>
+              <div class="text-xs text-slate-500 mt-1">${counts[c.id]} questions</div>
+            </button>`).join('')}
+        </div>
+
+        <button id="startQuizBtn" class="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold ripple hover:opacity-90 transition">
+          🚀 Start Quiz
+        </button>
+      </div>
+    </div>
+  `;
+  $$('.qf').forEach(b => b.addEventListener('click', () => { state.quizFilter = b.dataset.filter; render(); }));
+  $('#startQuizBtn').addEventListener('click', startQuiz);
+}
+function renderQuizQuestion() {
+  const total = state.quizPool.length;
+  if (total === 0) { state.quizPhase='setup'; return render(); }
+  const i = state.quizIdx;
+  const q = state.quizPool[i];
+  const course = D.courses.find(c => c.id === q.courseId);
+  const answered = state.quizAnswers[i];
+
+  app.innerHTML = `
+    <div class="max-w-3xl mx-auto">
+      <div class="flex items-center justify-between text-sm text-slate-500 mb-3">
+        <button id="quitQuiz" class="hover:text-indigo-500 transition">← Quit</button>
+        <div class="mono">Question ${i+1} / ${total}</div>
+        <div>Score: <span class="font-semibold text-emerald-500">${state.quizAnswers.filter(a=>a && a.picked===a.correctIdx).length}</span></div>
+      </div>
+      <div class="h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden mb-5">
+        <div class="h-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 transition-all duration-500" style="width:${((i)/total)*100}%"></div>
+      </div>
+
+      <div class="rounded-3xl p-6 sm:p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 card-glow animate-scale-in">
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span class="w-6 h-6 rounded-md bg-gradient-to-tr ${course.color} text-white grid place-items-center text-xs">${course.icon}</span>
+          ${course.name}
+        </div>
+        <div class="mt-3 text-lg sm:text-xl font-semibold display">${q.q}</div>
+
+        <div class="mt-5 grid gap-2" id="optList">
+          ${q.options.map((opt,idx)=>`
+            <button data-idx="${idx}" class="opt text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 transition ${answered?'locked':''} ${answered && idx===q.correct?'correct':''} ${answered && answered.picked===idx && idx!==q.correct?'wrong':''}">
+              <span class="mono text-xs text-slate-400 mr-2">${String.fromCharCode(65+idx)}.</span> ${opt}
+            </button>`).join('')}
+        </div>
+
+        ${answered ? `
+          <div class="mt-5 p-4 rounded-xl ${answered.picked===q.correct?'bg-emerald-500/10 border border-emerald-500/30':'bg-rose-500/10 border border-rose-500/30'} animate-fade-up">
+            <div class="text-sm font-semibold ${answered.picked===q.correct?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'}">${answered.picked===q.correct?'✓ Correct!':'✗ Not quite.'}</div>
+            <div class="text-sm mt-1 text-slate-600 dark:text-slate-300">${q.explain}</div>
+          </div>
+          <button id="nextQuiz" class="mt-5 w-full py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-medium ripple transition">${i+1<total?'Next question →':'See results 🎉'}</button>
+        ` : ''}
+      </div>
+    </div>
+  `;
+  $('#quitQuiz').addEventListener('click', () => { state.quizPhase='setup'; render(); });
+  if (!answered) {
+    $$('.opt').forEach(b => b.addEventListener('click', () => {
+      const picked = +b.dataset.idx;
+      state.quizAnswers[i] = { picked, correctIdx: q.correct };
+      render();
+    }));
+  }
+  $('#nextQuiz')?.addEventListener('click', () => {
+    if (i+1 < total) { state.quizIdx = i+1; render(); }
+    else { state.quizPhase = 'result'; render(); fireConfetti(); }
+  });
+}
+function renderQuizResult() {
+  const total = state.quizPool.length;
+  const correct = state.quizAnswers.filter(a => a && a.picked === a.correctIdx).length;
+  const pct = total ? Math.round((correct/total)*100) : 0;
+  const grade = pct>=90?'A · Interview-ready 🎉':pct>=75?'B · Strong foundation 💪':pct>=60?'C · Solid, polish it 📈':'D · Revise & retry 📚';
+  const color = pct>=90?'from-emerald-500 to-teal-400':pct>=75?'from-indigo-500 to-cyan-400':pct>=60?'from-amber-500 to-orange-400':'from-rose-500 to-pink-500';
+
+  // wrong list for review
+  const wrong = state.quizPool.map((q,i)=>({q, a: state.quizAnswers[i]})).filter(x => x.a && x.a.picked !== x.q.correct);
+
+  app.innerHTML = `
+    <div class="max-w-3xl mx-auto">
+      <div class="rounded-3xl p-8 text-white text-center bg-gradient-to-br ${color} card-glow relative overflow-hidden animate-scale-in">
+        <div class="absolute -right-8 -top-8 w-48 h-48 rounded-full bg-white/15 animate-float"></div>
+        <div class="text-xs uppercase tracking-widest opacity-80">Your Score</div>
+        <div class="display text-6xl font-bold mt-2">${pct}<span class="text-3xl opacity-80">%</span></div>
+        <div class="mt-1 opacity-90">${correct} / ${total} correct</div>
+        <div class="mt-4 inline-block px-4 py-1.5 rounded-full bg-white/20 text-sm font-medium">${grade}</div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 mt-5 stagger">
+        ${statCard('Correct', correct, '✅')}
+        ${statCard('Wrong', total - correct, '❌')}
+        ${statCard('Accuracy', pct + '%', '🎯')}
+      </div>
+
+      <div class="mt-5 flex flex-wrap gap-2 justify-center">
+        <button id="retake" class="px-4 py-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 ripple transition">🔁 Retake</button>
+        <button id="changeFilter" class="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 ripple transition">🎚 Change Focus</button>
+        <button class="hop px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 ripple transition" data-go="interview">🎤 Drill Interview Qs</button>
+      </div>
+
+      ${wrong.length ? `
+        <div class="mt-8">
+          <h3 class="display font-semibold mb-3">Review your misses</h3>
+          <div class="space-y-2 stagger">
+            ${wrong.map(({q,a}) => `
+              <details class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <summary class="p-4 flex items-center gap-3 row-hover transition">
+                  <div class="w-7 h-7 rounded-lg bg-rose-500 text-white text-xs grid place-items-center">✗</div>
+                  <div class="flex-1 font-medium text-sm">${q.q}</div>
+                  <span class="chev text-slate-400">›</span>
+                </summary>
+                <div class="acc-body px-4 pb-4 pt-1 text-sm border-t border-slate-200/60 dark:border-slate-800">
+                  <div class="text-rose-500">You picked: ${q.options[a.picked]}</div>
+                  <div class="text-emerald-500 mt-1">Correct: ${q.options[q.correct]}</div>
+                  <div class="mt-2 text-slate-600 dark:text-slate-300">${q.explain}</div>
+                </div>
+              </details>`).join('')}
+          </div>
+        </div>` : `<div class="mt-6 text-center text-emerald-500 font-medium">No misses. Clean sweep! 🌟</div>`}
+    </div>
+  `;
+  $('#retake').addEventListener('click', startQuiz);
+  $('#changeFilter').addEventListener('click', () => { state.quizPhase='setup'; render(); });
+  wireHopButtons();
+}
+
+function fireConfetti() {
+  const host = $('#confettiHost');
+  host.innerHTML = `<div class="confetti">${Array.from({length:80}).map(()=>{
+    const left = Math.random()*100;
+    const delay = Math.random()*0.6;
+    const colors = ['#6366f1','#ec4899','#f59e0b','#10b981','#06b6d4'];
+    const c = colors[Math.floor(Math.random()*colors.length)];
+    return `<span style="left:${left}vw; background:${c}; animation-delay:${delay}s; transform: rotate(${Math.random()*360}deg)"></span>`;
+  }).join('')}</div>`;
+  setTimeout(()=>host.innerHTML='', 3200);
+}
+
+/* ============================================================
+   MIND MAP — radial SVG (NotebookLM-style)
+   ============================================================ */
+function renderMindMap() {
+  app.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h1 class="display text-2xl font-bold">🌐 Mind Map</h1>
+        <p class="text-sm text-slate-500">The MSBA toolkit as one picture. Click a leaf to dive into the course.</p>
+      </div>
+      <div class="text-xs text-slate-400">Drag to pan · Scroll to zoom</div>
+    </div>
+    <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 overflow-hidden card-glow animate-scale-in">
+      <svg id="mmSvg" viewBox="-500 -380 1000 760" class="w-full" style="height:70vh; min-height:520px; cursor:grab;"></svg>
+    </div>
+  `;
+  drawMindMap();
+}
+function drawMindMap() {
+  const svg = $('#mmSvg');
+  const data = D.mindMap;
+  const branches = data.children;
+  const innerR = 90, midR = 240, outerR = 360;
+
+  const parts = [`<g id="mmRoot">`];
+
+  branches.forEach((br,i) => {
+    const aStart = (i / branches.length) * 2*Math.PI - Math.PI/2;
+    const aEnd   = ((i+1) / branches.length) * 2*Math.PI - Math.PI/2;
+    const aMid   = (aStart + aEnd)/2;
+    const bx = Math.cos(aMid)*midR, by = Math.sin(aMid)*midR;
+    parts.push(`<path class="mm-link" d="M0 0 C ${bx*0.4} ${by*0.4}, ${bx*0.7} ${by*0.7}, ${bx} ${by}" style="animation-delay:${i*80}ms"/>`);
+
+    const leaves = br.children || [];
+    leaves.forEach((lf,j) => {
+      const aLeaf = aStart + (aEnd-aStart) * ((j+0.5)/leaves.length);
+      const lx = Math.cos(aLeaf)*outerR, ly = Math.sin(aLeaf)*outerR;
+      parts.push(`<path class="mm-link" d="M${bx} ${by} C ${(bx+lx)/2} ${by}, ${(bx+lx)/2} ${ly}, ${lx} ${ly}" style="animation-delay:${i*80 + j*40 + 400}ms"/>`);
+      parts.push(`<g class="mm-node" transform="translate(${lx} ${ly})" data-leaf="${escapeAttr(br.name)}|${escapeAttr(lf.name)}" style="opacity:0; animation: fadeIn .4s ease forwards; animation-delay:${i*80 + j*40 + 700}ms; color:${palette(i)}">
+        <circle r="6" fill="${palette(i)}" stroke="#fff" stroke-width="2"/>
+        <text class="mm-label" x="${lx>=0?10:-10}" y="4" text-anchor="${lx>=0?'start':'end'}" fill="currentColor" style="color: var(--text-color)">${escapeText(lf.name)}</text>
+      </g>`);
+    });
+
+    parts.push(`<g class="mm-node" transform="translate(${bx} ${by})" data-branch="${escapeAttr(br.name)}" style="opacity:0; animation: scaleIn .5s cubic-bezier(.2,.8,.2,1.4) forwards; animation-delay:${i*100 + 200}ms">
+      <circle r="24" fill="url(#g${i})" stroke="rgba(255,255,255,0.6)" stroke-width="2"/>
+      <text class="mm-label" text-anchor="middle" y="4" fill="white" style="font-weight:600; font-size:11px">${escapeText(br.name)}</text>
+    </g>`);
+  });
+
+  // root
+  parts.push(`<g class="mm-node" transform="translate(0 0)" style="opacity:0; animation: scaleIn .5s cubic-bezier(.2,.8,.2,1.4) forwards;">
+    <circle r="60" fill="url(#gRoot)" stroke="rgba(255,255,255,0.7)" stroke-width="3"/>
+    <circle r="60" fill="none" stroke="rgba(99,102,241,.4)" stroke-width="2" class="animate-spin-slow" stroke-dasharray="4 6"/>
+    <text class="mm-label" text-anchor="middle" y="-2" style="font-weight:700; font-size:14px" fill="white">MSBA</text>
+    <text class="mm-label" text-anchor="middle" y="16" style="font-size:10px; opacity:.85" fill="white">Toolkit</text>
+  </g>`);
+
+  parts.push(`</g>`);
+
+  const defs = ['<defs>',
+    '<radialGradient id="gRoot"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#4f46e5"/></radialGradient>',
+    ...branches.map((b,i) => `<radialGradient id="g${i}"><stop offset="0%" stop-color="${palette(i)}AA"/><stop offset="100%" stop-color="${palette(i)}"/></radialGradient>`),
+    '</defs>'].join('');
+
+  svg.innerHTML = defs + parts.join('');
+
+  // pan & zoom
+  let vb = {x:-500, y:-380, w:1000, h:760};
+  let drag = null;
+  const setVB = () => svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  svg.addEventListener('mousedown', e => { drag = {x:e.clientX, y:e.clientY, vb:{...vb}}; svg.style.cursor='grabbing'; });
+  window.addEventListener('mouseup', () => { drag=null; svg.style.cursor='grab'; });
+  window.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const rect = svg.getBoundingClientRect();
+    const dx = (e.clientX - drag.x) * (vb.w/rect.width);
+    const dy = (e.clientY - drag.y) * (vb.h/rect.height);
+    vb.x = drag.vb.x - dx; vb.y = drag.vb.y - dy; setVB();
+  });
+  svg.addEventListener('wheel', e => {
+    e.preventDefault();
+    const factor = e.deltaY > 0 ? 1.1 : 0.9;
+    const rect = svg.getBoundingClientRect();
+    const mx = vb.x + ((e.clientX-rect.left)/rect.width)*vb.w;
+    const my = vb.y + ((e.clientY-rect.top)/rect.height)*vb.h;
+    vb.w *= factor; vb.h *= factor;
+    vb.x = mx - ((e.clientX-rect.left)/rect.width)*vb.w;
+    vb.y = my - ((e.clientY-rect.top)/rect.height)*vb.h;
+    setVB();
+  }, {passive:false});
+
+  const branchToCourse = {
+    'Statistics':'applied-stats','Data Mining':'data-mining','Deep Learning':'deep-learning',
+    'Optimization':'optimization','Database Systems':'info574','Process Mining':'process-mining',
+    'Data Visualization':'info584','AI in Business':'ai-business','Capstone / Security':'capstone'
+  };
+  $$('.mm-node[data-branch]').forEach(n => n.addEventListener('click', () => {
+    const id = branchToCourse[n.dataset.branch];
+    if (id) { state.route='library'; state.courseId=id; state.courseTab='overview'; render(); }
+  }));
+  $$('.mm-node[data-leaf]').forEach(n => n.addEventListener('click', () => {
+    const [branch] = n.dataset.leaf.split('|');
+    const id = branchToCourse[branch];
+    if (id) { state.route='library'; state.courseId=id; state.courseTab='concepts'; render(); }
+  }));
+}
+function palette(i) { return ['#6366f1','#10b981','#f59e0b','#ec4899','#06b6d4','#8b5cf6','#ef4444'][i%7]; }
+function escapeText(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function escapeAttr(s){ return s.replace(/"/g, '&quot;'); }
+
+/* ============================================================
+   GLOSSARY
+   ============================================================ */
+function renderGlossary() {
+  const q = state.search.toLowerCase();
+  if (!state.glossaryCat) state.glossaryCat = 'all';
+  const all = D.glossary.filter(g => !q || g.term.toLowerCase().includes(q) || g.def.toLowerCase().includes(q));
+  const list = state.glossaryCat === 'all' ? all : all.filter(g => g.cat === state.glossaryCat);
+
+  const counts = {all: all.length};
+  D.glossaryCategories.forEach(c => counts[c.id] = all.filter(g => g.cat === c.id).length);
+
+  const tabs = [{id:'all', label:'All', icon:'📚', color:'from-indigo-500 to-fuchsia-500'}, ...D.glossaryCategories];
+
+  app.innerHTML = `
+    <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+      <div>
+        <h1 class="display text-2xl font-bold">📖 Glossary</h1>
+        <p class="text-sm text-slate-500">Quick definitions for ${D.glossary.length} terms, grouped by topic. Type to filter or pick a category.</p>
+      </div>
+      <div class="text-sm text-slate-500">${list.length} shown</div>
+    </div>
+
+    <div class="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-1">
+      ${tabs.map(t => `
+        <button data-cat="${t.id}" class="gcat-btn shrink-0 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ripple ${state.glossaryCat===t.id?'bg-gradient-to-r '+t.color+' text-white shadow':'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400'}">
+          <span class="mr-1">${t.icon}</span>${t.label} <span class="opacity-70 ml-1">${counts[t.id]||0}</span>
+        </button>`).join('')}
+    </div>
+
+    ${list.length === 0 ? `<div class="rounded-2xl p-10 text-center text-slate-500 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">No terms match.</div>` : `
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 stagger">
+      ${list.map(g => {
+        const cat = D.glossaryCategories.find(c => c.id === g.cat) || {color:'from-slate-500 to-slate-400', icon:'📚', label:'General'};
+        return `
+        <div class="rounded-2xl p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift transition relative overflow-hidden group">
+          <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r ${cat.color} opacity-70"></div>
+          <div class="flex items-start justify-between gap-2">
+            <div class="font-semibold display">${g.term}</div>
+            <span class="text-[10px] text-slate-400 shrink-0">${cat.icon}</span>
+          </div>
+          <div class="text-sm text-slate-500 mt-1">${g.def}</div>
+        </div>`;
+      }).join('')}
+    </div>`}
+  `;
+  $$('.gcat-btn').forEach(b => b.addEventListener('click', () => { state.glossaryCat = b.dataset.cat; render(); }));
+}
+
+/* ============================================================
+   ABOUT — Builder Info
+   ============================================================ */
+function renderAbout() {
+  const a = D.about;
+  app.innerHTML = `
+    <div class="max-w-4xl mx-auto">
+      <div class="rounded-3xl overflow-hidden card-glow bg-gradient-to-br from-indigo-600 via-fuchsia-600 to-amber-500 text-white relative animate-scale-in">
+        <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,.4), transparent 35%), radial-gradient(circle at 90% 80%, rgba(255,255,255,.35), transparent 40%);"></div>
+        <div class="relative p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6">
+          <div class="avatar-ring relative">
+            <div id="avatarWrap" class="relative w-32 h-32 rounded-full bg-white/20 grid place-items-center text-4xl font-bold display border-4 border-white/40 overflow-hidden shadow-2xl">
+              <span id="avatarInitials">${a.initials}</span>
+              <img id="avatarImg" src="${a.photo}" onload="this.style.opacity=1; document.getElementById('avatarInitials').style.display='none';" onerror="this.style.display='none'" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition: opacity .4s" alt="profile" />
+            </div>
+          </div>
+          <div class="text-center sm:text-left">
+            <div class="text-xs uppercase tracking-[0.25em] opacity-80">About the Builder</div>
+            <h1 class="display text-3xl sm:text-4xl font-bold mt-1">${a.fullName}</h1>
+            <div class="opacity-90 mt-1">${a.role}</div>
+            <div class="text-sm opacity-80">${a.school} · Class of ${a.yearCompleted}</div>
+            <div class="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
+              ${a.social.map(s => `<a href="${s.url}" target="_blank" class="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-xs font-medium transition ripple">${s.icon} ${s.label}</a>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4 mt-5 stagger">
+        <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+          <h3 class="display font-semibold mb-2 flex items-center gap-2"><span>👋</span>About Me</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${a.bio}</p>
+        </div>
+        <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift">
+          <h3 class="display font-semibold mb-2 flex items-center gap-2"><span>🛡</span>Capstone</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-300">${a.capstone}</p>
+          <button class="mt-3 text-xs text-indigo-500 hover:text-indigo-400 transition hop" data-go="library" onclick="state.courseId='capstone'">Open Capstone module →</button>
+        </div>
+        <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift md:col-span-2">
+          <h3 class="display font-semibold mb-3 flex items-center gap-2"><span>🧰</span>Skills &amp; Stack</h3>
+          <div class="flex flex-wrap gap-2">
+            ${a.skills.map((s,i) => `<span class="tag bg-gradient-to-r from-indigo-500/15 to-fuchsia-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20 animate-fade-up" style="animation-delay:${i*50}ms">${s}</span>`).join('')}
+          </div>
+        </div>
+        <div class="rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 lift md:col-span-2">
+          <h3 class="display font-semibold mb-2 flex items-center gap-2"><span>📷</span>Add your photo</h3>
+          <p class="text-sm text-slate-500">Drop a file named <code class="mono text-xs bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">profile.jpg</code> into the <code class="mono text-xs bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">MSBA-Learning-Hub</code> folder. It will auto-load here on refresh.</p>
+        </div>
+      </div>
+    </div>
+  `;
+  wireHopButtons();
+}
+
+/* ============================================================
+   SEARCH (global)
+   ============================================================ */
+$('#globalSearch').addEventListener('input', e => {
+  state.search = e.target.value.trim();
+  render();
+});
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+    if (e.key === 'Escape') e.target.blur();
+    return;
+  }
+  if (e.key === '/') { e.preventDefault(); $('#globalSearch').focus(); return; }
+  const k = e.key.toLowerCase();
+  if (k === 'd') { state.route='dashboard'; render(); }
+  if (k === 'l') { state.route='library'; state.courseId=null; render(); }
+  if (k === 'i') { state.route='interview'; render(); }
+  if (k === 'q') { state.route='quiz'; render(); }
+  if (k === 'm') { state.route='mindmap'; render(); }
+  if (k === 'g') { state.route='glossary'; render(); }
+  if (k === 'a') { state.route='about'; render(); }
+  if (state.route === 'interview') {
+    if (e.key === 'ArrowRight') { $('#nextQ')?.click(); }
+    if (e.key === 'ArrowLeft')  { $('#prevQ')?.click(); }
+    if (e.key === ' ')          { e.preventDefault(); $('#flipInner')?.click(); }
+  }
+});
+
+/* INIT */
+applyTheme();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Personal photo (keep your face out of public repos unless you choose to add it)
+profile.jpg
+profile.jpeg
+profile.png
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Logs
+*.log
